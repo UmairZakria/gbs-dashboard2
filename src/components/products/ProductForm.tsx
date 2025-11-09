@@ -835,7 +835,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 <div key={index} className="relative">
                   <img
                     src={image}
-                    alt={`Product image ${index + 1}`}
+                    alt={product?.name ? `${product.name} ${index + 1}` : `Product ${index + 1}`}
                     className="w-full h-24 object-cover rounded-lg"
                   />
                   <button

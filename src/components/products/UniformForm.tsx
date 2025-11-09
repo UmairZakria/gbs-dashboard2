@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { XMarkIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, PlusIcon } from '@heroicons/react/24/outline';
 import type { Uniform } from '../../types';
 
 interface UniformFormProps {
@@ -50,9 +50,6 @@ const UniformForm: React.FC<UniformFormProps> = ({
 
   const [newSize, setNewSize] = useState('');
   const [newColor, setNewColor] = useState('');
-  const [newMaterial, setNewMaterial] = useState('');
-  const [newTag, setNewTag] = useState('');
-  const [newKeyword, setNewKeyword] = useState('');
   const [newImageUrl, setNewImageUrl] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 

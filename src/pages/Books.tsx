@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PlusIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { bookService, Author, Publisher, BookSeries } from '../services/bookService';
 import { AuthorForm, PublisherForm, BookSeriesForm } from '../components/books';
@@ -25,11 +25,7 @@ const Books: React.FC = () => {
   const [editingPublisher, setEditingPublisher] = useState<Publisher | null>(null);
   const [editingBookSeries, setEditingBookSeries] = useState<BookSeries | null>(null);
 
-  useEffect(() => {
-    loadData();
-  }, [activeTab]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -62,7 +58,11 @@ const Books: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [activeTab]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const handleEdit = (item: Author | Publisher | BookSeries) => {
     if (activeTab === 'authors') {

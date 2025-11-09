@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   CalendarIcon,
   ChartBarIcon,
@@ -26,7 +26,6 @@ import {
 } from 'recharts';
 import { dashboardService } from '../services/dashboardService';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
-import ErrorMessage from '../components/ui/ErrorMessage';
 
 const Analytics: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -39,11 +38,7 @@ const Analytics: React.FC = () => {
   const [categoryData, setCategoryData] = useState<any[]>([]);
   const [conversionData, setConversionData] = useState<any[]>([]);
 
-  useEffect(() => {
-    fetchAnalyticsData();
-  }, [timeRange]);
-
-  const fetchAnalyticsData = async () => {
+  const fetchAnalyticsData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -75,12 +70,8 @@ const Analytics: React.FC = () => {
       setCategoryData(categoryResponse.success && categoryResponse.data ? categoryResponse.data.categories || [] : []);
       setConversionData(conversionResponse.success && conversionResponse.data ? conversionResponse.data.conversions || [] : []);
 
-      // Check if any data was loaded successfully
-      const hasData = [revenueResponse, ordersResponse, customerResponse, productResponse, categoryResponse, conversionResponse]
-        .some(response => response.success && response.data);
-
-      // Don't set error if no data - just show empty state
-      // The warning message below will handle this case
+      // Don't set error if no data - just show empty state. We intentionally
+      // avoid throwing here so the page can render the informative warning.
 
     } catch (err: any) {
       console.error('Error fetching analytics data:', err);
@@ -88,7 +79,11 @@ const Analytics: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [timeRange]);
+
+  useEffect(() => {
+    fetchAnalyticsData();
+  }, [fetchAnalyticsData]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {

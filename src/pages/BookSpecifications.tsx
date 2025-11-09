@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { bookSpecificationService, BookSpecification } from '../services/bookSpecificationService';
 import { productService } from '../services/productService';
@@ -17,12 +17,7 @@ const BookSpecifications: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingSpec, setEditingSpec] = useState<BookSpecification | null>(null);
 
-  useEffect(() => {
-    fetchSpecifications();
-    fetchProducts();
-  }, [currentPage, searchTerm]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       const response = await productService.getProducts({}, 1, 100);
       if (response.success && response.data?.products) {
@@ -31,9 +26,9 @@ const BookSpecifications: React.FC = () => {
     } catch (err) {
       console.error('Error fetching products:', err);
     }
-  };
+  }, []);
 
-  const fetchSpecifications = async () => {
+  const fetchSpecifications = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -49,7 +44,12 @@ const BookSpecifications: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchSpecifications();
+    fetchProducts();
+  }, [fetchSpecifications, fetchProducts]);
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this book specification?')) {

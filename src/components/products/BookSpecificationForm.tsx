@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { XMarkIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { BookSpecification } from '../../services/bookSpecificationService';
 
 interface BookSpecificationFormProps {
@@ -61,10 +61,6 @@ const BookSpecificationForm: React.FC<BookSpecificationFormProps> = ({
   });
 
   const [newAuthor, setNewAuthor] = useState('');
-  const [newEditor, setNewEditor] = useState('');
-  const [newIllustrator, setNewIllustrator] = useState('');
-  const [newFeature, setNewFeature] = useState('');
-  const [newObjective, setNewObjective] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateForm = () => {

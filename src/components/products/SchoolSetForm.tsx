@@ -53,8 +53,7 @@ const SchoolSetForm: React.FC<SchoolSetFormProps> = ({
     quantity: 1,
     unitPrice: 0,
   });
-  const [newTag, setNewTag] = useState('');
-  const [newKeyword, setNewKeyword] = useState('');
+  
   const [newImageUrl, setNewImageUrl] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -117,22 +116,7 @@ const SchoolSetForm: React.FC<SchoolSetFormProps> = ({
     }));
   };
 
-  const addTag = () => {
-    if (newTag.trim() && !formData.tags?.includes(newTag.trim())) {
-      setFormData(prev => ({
-        ...prev,
-        tags: [...(prev.tags || []), newTag.trim()],
-      }));
-      setNewTag('');
-    }
-  };
-
-  const removeTag = (tag: string) => {
-    setFormData(prev => ({
-      ...prev,
-      tags: prev.tags?.filter(t => t !== tag) || [],
-    }));
-  };
+  // tag helpers intentionally omitted when not used in the UI
 
   const addImage = () => {
     if (newImageUrl.trim() && !formData.images?.includes(newImageUrl.trim())) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   MagnifyingGlassIcon,
   FunnelIcon,
@@ -23,11 +23,7 @@ const Orders: React.FC = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [showOrderModal, setShowOrderModal] = useState(false);
 
-  useEffect(() => {
-    fetchOrders();
-  }, [currentPage, searchTerm, selectedStatus]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -49,7 +45,11 @@ const Orders: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentPage, searchTerm, selectedStatus]);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   const handleViewOrder = (order: Order) => {
     setSelectedOrder(order);

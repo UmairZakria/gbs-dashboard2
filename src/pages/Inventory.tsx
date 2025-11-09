@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PlusIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { inventoryService, InventoryItem, Warehouse } from '../services/inventoryService';
 import WarehouseForm from '../components/products/WarehouseForm';
@@ -19,11 +19,7 @@ const Inventory: React.FC = () => {
   const [showWarehouseForm, setShowWarehouseForm] = useState(false);
   const [editingWarehouse, setEditingWarehouse] = useState<Warehouse | null>(null);
 
-  useEffect(() => {
-    loadData();
-  }, [selectedWarehouse]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -50,7 +46,11 @@ const Inventory: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedWarehouse]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const getStatusColor = (status: string) => {
     switch (status) {

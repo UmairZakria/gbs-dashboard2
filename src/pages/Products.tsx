@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   PlusIcon,
   MagnifyingGlassIcon,
@@ -31,12 +31,7 @@ const Products: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [brands, setBrands] = useState<Brand[]>([]);
 
-  useEffect(() => {
-    fetchProducts();
-    fetchSetupData();
-  }, [currentPage, searchTerm, selectedCategory]);
-
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -58,9 +53,9 @@ const Products: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentPage, searchTerm, selectedCategory]);
 
-  const fetchSetupData = async () => {
+  const fetchSetupData = useCallback(async () => {
     try {
       const categoriesResponse = await categoryService.getCategories();
       const brandsResponse = await brandService.getBrands();
@@ -72,12 +67,17 @@ const Products: React.FC = () => {
       if (brandsResponse.success && brandsResponse.data) {
         setBrands(brandsResponse.data);
       }
-    } catch (error) {
-      console.error('Error fetching setup data:', error);
-    }
-  };
+      } catch (error) {
+        console.error('Error fetching setup data:', error);
+      }
+    }, []);
 
-  const handleDeleteProduct = async (product: Product) => {
+    useEffect(() => {
+      fetchProducts();
+      fetchSetupData();
+    }, [fetchProducts, fetchSetupData]);
+
+    const handleDeleteProduct = async (product: Product) => {
     setProductToDelete(product);
     setShowDeleteModal(true);
   };

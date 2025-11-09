@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   MagnifyingGlassIcon,
   FunnelIcon,
@@ -25,11 +25,7 @@ const Customers: React.FC = () => {
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
   const [showCustomerModal, setShowCustomerModal] = useState(false);
 
-  useEffect(() => {
-    fetchCustomers();
-  }, [currentPage, searchTerm, selectedStatus]);
-
-  const fetchCustomers = async () => {
+  const fetchCustomers = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -51,7 +47,11 @@ const Customers: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentPage, searchTerm, selectedStatus]);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
 
   const handleViewCustomer = (customer: Customer) => {
     setSelectedCustomer(customer);
@@ -73,18 +73,7 @@ const Customers: React.FC = () => {
     });
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'inactive':
-        return 'bg-red-100 text-red-800';
-      case 'pending':
-        return 'bg-yellow-100 text-yellow-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
-  };
+  // getStatusColor removed because it's not used in the current UI
 
   const getCustomerValue = (customer: Customer) => {
     if (!customer.orders || customer.orders.length === 0) return 'New Customer';
