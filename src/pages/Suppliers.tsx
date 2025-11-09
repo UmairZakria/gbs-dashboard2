@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PlusIcon, EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
 import { supplierService, Supplier, PurchaseOrder } from '../services/supplierService';
 import SupplierForm from '../components/products/SupplierForm';
@@ -18,11 +18,7 @@ const Suppliers: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingSupplier, setEditingSupplier] = useState<Supplier | null>(null);
 
-  useEffect(() => {
-    loadData();
-  }, [activeTab]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -53,7 +49,11 @@ const Suppliers: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [activeTab]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const getStatusColor = (status: string) => {
     switch (status) {

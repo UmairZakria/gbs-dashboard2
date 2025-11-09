@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { PlusIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { uniformService, Uniform } from '../services/uniformService';
 import UniformForm from '../components/products/UniformForm';
@@ -10,16 +10,12 @@ const Uniforms: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage] = useState(1);
+  const [, setTotalPages] = useState(1);
   const [showForm, setShowForm] = useState(false);
   const [editingUniform, setEditingUniform] = useState<Uniform | null>(null);
 
-  useEffect(() => {
-    fetchUniforms();
-  }, [currentPage, searchTerm]);
-
-  const fetchUniforms = async () => {
+  const fetchUniforms = useCallback(async () => {
     try {
       setIsLoading(true);
       setError(null);
@@ -34,7 +30,11 @@ const Uniforms: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchUniforms();
+  }, [fetchUniforms, searchTerm]);
 
   const handleDelete = async (id: string) => {
     if (window.confirm('Are you sure you want to delete this uniform?')) {
